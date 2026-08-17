@@ -1,0 +1,38 @@
+name: edenflow
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+
+  # PyTorch + CUDA
+  - pytorch=2.4.1
+  - torchvision=0.19.1
+  - torchaudio=2.4.1
+  - pytorch-cuda=12.1
+
+  # Core scientific stack
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - scikit-learn
+
+  # Other conda packages
+  - lpips
+  - av
+
+  # Pip section
+  - pip
+  - pip:
+      - xformers==0.0.27.post2
+      - torchdiffeq
+      - cupy-cuda12x
+      - einops
+      - diffusers
+      - transformers
+      - accelerate
+      - safetensors

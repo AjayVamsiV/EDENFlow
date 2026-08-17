@@ -1,0 +1,56 @@
+model_name: "EDEN_DiT"
+mixed_precision: "no"
+pretrained_dit_path: null   # DiT checkpoint saved by train_dit.py
+pretrained_vae_path: ./Checkpoints/eden_vae.pt   # pretrained VAE checkpoint
+raft_model_path: ./Checkpoints/raft-sintel.pth   # RAFT weights (same path as train_dit.py)
+vae_scaler: 0.179437
+vae_shift: 0.770202
+# cos_sim_mean/std kept for one_iter_for_dit signature compatibility; not used in v2 inference
+cos_sim_mean: 0.990539
+cos_sim_std: 0.0608093
+model_args:
+  latent_dim: 16
+  dim: 768
+  num_heads: 12
+  mlp_ratio: 4.0
+  depth: 12
+  qkv_bias: false
+  attn_drop_rate: 0.
+  proj_drop_rate: 0.
+  use_xformers: true
+vae_args:
+  in_dim: 3
+  out_dim: 3
+  patch_size: 16
+  hidden_dim: 768
+  num_heads: 12
+  mlp_ratio: 4.
+  latent_dim: 16
+  encoder_depth: 4
+  decoder_depth: 4
+  qkv_bias: false
+  attn_drop_rate: 0.
+  proj_drop_rate: 0.
+  use_xformers: true
+  add_attn_encoder: true
+  add_attn_decoder: true
+  add_attn_type: "temporal_attn"
+dataset_name: "DAIN_HD"
+dataset_args:
+  DAVIS:
+    data_dir: ./Datasets/DAVIS
+    height: 480
+    width: 854
+    is_val: true
+  DAIN_HD:
+    data_dir: ./Datasets/DAIN_HD
+    res: 544
+  SNU_FILM:
+    data_dir: ./Datasets/SNU_FILM
+    mode: extreme
+dataloader:
+  batch_size: 1
+  num_workers: 0
+output_dir: ./Logs3
+save_generated_frames: true
+global_seed: 0
