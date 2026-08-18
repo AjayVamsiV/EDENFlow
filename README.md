@@ -1,5 +1,6 @@
 
 # EDENFlow: Flow-Guided Diffusion Transformer for Video Frame Interpolation
+[**🚀 Run Inference on Google Colab**](https://colab.research.google.com/drive/1KMvpWA_1lNl8n3Nv_NVprXUrSS6foGVI?usp=sharing)
 
 We introduce **EDENFlow**, a diffusion-based framework for high-quality video frame interpolation, designed for challenging scenes with large and complex motion.
 
