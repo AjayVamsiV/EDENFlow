@@ -86,8 +86,6 @@ def main():
     model = load_model(model_name, **args.model_args)
     logger.info(f"{model_name} Parameters: {sum(p.numel() for p in model.parameters()):,}")
     ckpt = torch.load(args.pretrained_eden_path, map_location="cpu")
-    print(args.pretrained_eden_path)
-    print("ckecpint keys: ",ckpt.keys())
     model.load_state_dict(ckpt["eden"])
     transport = create_transport("Linear", "velocity")
     sampler = Sampler(transport)
@@ -117,7 +115,6 @@ def main():
 
     # begin training
     model.eval()
-    #model = model if model.module is None else model.module
     model = model.module if hasattr(model, "module") else model
     steps = 0
     results = {"PSNR": 0., "SSIM": 0., "LPIPS": 0., "FloLPIPS": 0., "L1": 0.}
@@ -223,13 +220,9 @@ def main():
             ).to(accelerator.device)
 
             denoise_kwargs = {
-
                 "cond_frames": cond_frames,
-
                 "difference": difference,
-
                 "flow_fwd": fwd_flow,
-
                 "flow_bwd": bwd_flow
             }
 
@@ -269,12 +262,7 @@ def main():
         ssim = cal_metrics.cal_ssim(generated_frames, gt)
         lpips = cal_metrics.cal_lpips(generated_frames, gt)
         flolpips = cal_metrics.cal_flolpips(generated_frames, gt, frame_0, frame_1)
-        #l1 = torch.mean(torch.abs(generated_frames - gt))
         l1 = torch.abs(generated_frames - gt)
-        cur_batch_size = frame_0.shape[0]
-        #print("cur batch size: ", cur_batch_size, accelerator.gather(psnr.repeat(cur_batch_size)).shape)
-        #print(accelerator.gather(psnr.repeat(cur_batch_size)))
-        #print("PSNR sum:", psnr.shape, accelerator.gather(psnr).shape)
         results["PSNR"] += accelerator.gather(psnr).sum().item()
         results["SSIM"] += accelerator.gather(ssim).sum().item()
         results["LPIPS"] += accelerator.gather(lpips).sum().item()
@@ -294,7 +282,7 @@ def main():
         total_samples = steps * local_batch_size * accelerator.num_processes
     else:
         total_samples = dataloader.dataset.__len__()
-    print("PSNR total: ", results["PSNR"], "SSIM total: ", results["SSIM"], "LPIPS total: ", results["LPIPS"], "FloLPIPS total: ", results["FloLPIPS"], "L1 total: ", results["L1"])
+    #print("PSNR total: ", results["PSNR"], "SSIM total: ", results["SSIM"], "LPIPS total: ", results["LPIPS"], "FloLPIPS total: ", results["FloLPIPS"], "L1 total: ", results["L1"])
     print(f"Total samples evaluated: {total_samples}. ", dataloader.dataset.__len__(), accelerator.num_processes)
     for key in results.keys():
         results[key] /= total_samples
